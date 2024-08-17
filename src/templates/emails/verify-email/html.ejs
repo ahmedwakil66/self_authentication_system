@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <!-- <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #fbeeb8;
+        color: #333;
+        padding: 10px;
+      }
+      .a3d24 {
+        text-align: center;
+        max-width: 500px;
+        margin: 0 auto;
+        background-color: #fff;
+        padding: 40px;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      }
+      .a3d24 .logo {
+        color: green;
+        letter-spacing: 2px;
+      }
+      .a3d24 .btn {
+        display: block;
+        background-color: rgb(108, 188, 108);
+        color: #fff;
+        padding: 10px 20px;
+        border-radius: 5px;
+        text-decoration: none;
+        text-align: center;
+      }
+      .a3d24 .text-link {
+        color: rgb(108, 108, 239);
+        overflow-wrap: break-word;
+        word-break: break-word;
+      }
+      .a3d24-copyright {
+        opacity: 0.9;
+        font-size: 14px;
+        text-align: center;
+        margin-top: 20px;
+      }
+    </style> -->
+  </head>
+  <body
+    style="
+      background-color: #fbeeb8;
+      color: #333;
+    "
+  >
+    <div
+      style="
+        font-family: Arial, sans-serif;
+        background-color: #fbeeb8;
+        color: #333;
+        padding: 10px;
+      "
+    >
+      <div
+        class="a3d24"
+        style="
+          text-align: center;
+          max-width: 500px;
+          margin: 0 auto;
+          background-color: #fff;
+          padding: 40px;
+          border-radius: 8px;
+          box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        "
+      >
+        <p style="color: green; letter-spacing: 2px">WASIVEN</p>
+        <span style="display: block; margin: 20px 0"></span>
+        <h2>Verify Your Email Address</h2>
+        <span style="display: block; margin: 20px 0"></span>
+        <p>
+          Thank you for registering. We need to make sure that this is you who
+          has registered and no one else. Once it is done, you can use your
+          account with full privileges.
+        </p>
+        <span style="display: block; margin: 20px 0"></span>
+        <a
+          href="<%= verificationLink %>"
+          class="btn"
+          style="
+            display: block;
+            background-color: rgb(108, 188, 108);
+            color: #fff;
+            padding: 10px 20px;
+            border-radius: 5px;
+            text-decoration: none;
+            text-align: center;
+          "
+          >Verify Email</a
+        >
+        <span style="display: block; margin: 20px 0"></span>
+        <p>
+          If the button above doesn't work, copy and paste this link into your
+          browser:
+        </p>
+        <span style="display: block; margin: 20px 0"></span>
+        <p
+          class="text-link"
+          style="
+            color: rgb(108, 108, 239);
+            overflow-wrap: break-word;
+            word-break: break-word;
+          "
+        >
+          <%= verificationLink %>
+        </p>
+      </div>
+      <p
+        class="a3d24-copyright"
+        style="
+          opacity: 0.9;
+          font-size: 14px;
+          text-align: center;
+          margin-top: 20px;
+        "
+      >
+      © Wasiven. All rights reserved.
+      </p>
+    </div>
+  </body>
+</html>

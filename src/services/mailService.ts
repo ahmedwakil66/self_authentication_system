@@ -1,11 +1,12 @@
 import { SendMailOptions } from "nodemailer";
 import jsonwebtoken, { EncodedPayload } from "@/config/jwt";
-import transporter from "@/config/mail";
+import { email, transporter } from "@/config/mail";
 
 export const sendMail = (mailOptions: SendMailOptions) =>
   transporter.sendMail(mailOptions);
 
-export const sendEmailVerificationMail = async (payload: EncodedPayload) => {
+// Email verification mail WITHOUT template
+export const sendEmailVerificationMailNoTemplate = async (payload: EncodedPayload) => {
   const verificationLink = `${
     process.env.BASE_URL
   }/verify-email?token=${jsonwebtoken.generateEmailToken(payload)}`;
@@ -24,6 +25,28 @@ export const sendEmailVerificationMail = async (payload: EncodedPayload) => {
       to: payload.email,
       subject: "Wasiven Email Verification",
       html: emailTemplate,
+    });
+  } catch (error) {
+    console.error("Error sending email:", error);
+    throw new Error((error as NativeError).message);
+  }
+};
+
+// Email verification mail with TEMPLATE
+export const sendEmailVerificationMail = async (payload: EncodedPayload) => {
+  const verificationLink = `${
+    process.env.BASE_URL
+  }/verify-email?token=${jsonwebtoken.generateEmailToken(payload)}`;
+
+  try {
+    await email.send({
+      template: "verify-email", // The folder name of the template
+      message: {
+        to: payload.email,
+      },
+      locals: {
+        verificationLink,
+      },
     });
   } catch (error) {
     console.error("Error sending email:", error);

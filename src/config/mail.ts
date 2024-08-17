@@ -1,6 +1,9 @@
 import nodemailer from "nodemailer";
+import Email from "email-templates";
+import path from "path";
 
-const transporter = nodemailer.createTransport({
+// Nodemailer transporter configuration
+export const transporter = nodemailer.createTransport({
   host: process.env.SMTP_HOST,
   port: 465,
   secure: true, // Use `true` for port 465, `false` for all other ports
@@ -10,4 +13,22 @@ const transporter = nodemailer.createTransport({
   },
 });
 
-export default transporter;
+// Email-templates configuration
+export const email = new Email({
+  message: {
+    from: `"WASIVEN" <dev@wasiven.xyz>`,
+  },
+  send: false,
+  transport: transporter,
+  views: {
+    root: path.resolve(__dirname, "..", "templates", "emails"),
+    options: {
+      extension: "ejs",
+    },
+  },
+});
+
+export default {
+  transporter,
+  email,
+};
