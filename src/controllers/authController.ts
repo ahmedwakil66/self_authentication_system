@@ -22,8 +22,8 @@ export const login = async (req: Request, res: Response) => {
       id: user._id.toString(),
       email,
     };
-    const accessToken = jwt.generateAccessToken(payload);
-    const refreshToken = jwt.generateRefreshToken(payload);
+    const accessToken = user.generateAccessToken();
+    const refreshToken = user.generateRefreshToken();
 
     // Store refresh token in the database
     user.refreshToken = refreshToken;
@@ -70,10 +70,7 @@ export const refreshAccessToken = async (req: Request, res: Response) => {
     }
 
     // Generate new access token
-    const newAccessToken = jwt.generateAccessToken({
-      id: user._id.toString(),
-      email: user.email,
-    });
+    const newAccessToken = user.generateAccessToken();
 
     // Send new access token
     res.cookie("accessToken", newAccessToken, {
@@ -117,6 +114,8 @@ export const logout = async (req: Request, res: Response) => {
 export const verifyUserEmail = async (req: Request, res: Response) => {
   const { token } = req.query;
   try {
+    if (!token) return res.status(400).json({ message: "Token not found" });
+
     const payload = jwt.verifyToken(token as string, "email");
     if (!payload)
       return res.status(400).json({ message: "Invalid or expired token" });
@@ -127,7 +126,7 @@ export const verifyUserEmail = async (req: Request, res: Response) => {
     user.isVerified = true; // Set the user as verified
     await user.save();
 
-    res.status(200).json({ message: "Email verified successfully" });
+    res.json({ message: "Email verified successfully" });
   } catch (error) {
     res.status(500).json({ message: "Server error" });
   }

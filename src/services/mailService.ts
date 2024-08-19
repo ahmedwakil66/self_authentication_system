@@ -6,7 +6,9 @@ export const sendMail = (mailOptions: SendMailOptions) =>
   transporter.sendMail(mailOptions);
 
 // Email verification mail WITHOUT template
-export const sendEmailVerificationMailNoTemplate = async (payload: EncodedPayload) => {
+export const sendEmailVerificationMailNoTemplate = async (
+  payload: EncodedPayload
+) => {
   const verificationLink = `${
     process.env.BASE_URL
   }/verify-email?token=${jsonwebtoken.generateEmailToken(payload)}`;
@@ -33,16 +35,14 @@ export const sendEmailVerificationMailNoTemplate = async (payload: EncodedPayloa
 };
 
 // Email verification mail with TEMPLATE
-export const sendEmailVerificationMail = async (payload: EncodedPayload) => {
-  const verificationLink = `${
-    process.env.BASE_URL
-  }/verify-email?token=${jsonwebtoken.generateEmailToken(payload)}`;
+export const sendEmailVerificationMail = async (token: string, to: string) => {
+  const verificationLink = `${process.env.BASE_URL}/verify-email?token=${token}`;
 
   try {
     await email.send({
       template: "verify-email", // The folder name of the template
       message: {
-        to: payload.email,
+        to: to,
       },
       locals: {
         verificationLink,

@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import bcrypt from "bcrypt";
+import jsonwebtoken from "@/config/jwt";
 
 // 1. Create an interface representing a document in MongoDB.
 export interface IUser {
@@ -12,6 +13,9 @@ export interface IUser {
 
 interface IUserMethods {
   comparePassword(candidatePassword: string): Promise<boolean>;
+  generateAccessToken(): string;
+  generateRefreshToken(): string;
+  generateEmailVerificationToken(): string;
 }
 
 type UserModel = mongoose.Model<IUser, {}, IUserMethods>;
@@ -59,6 +63,27 @@ userSchema.methods.comparePassword = async function (
   candidatePassword: string
 ): Promise<boolean> {
   return await bcrypt.compare(candidatePassword, this.password);
+};
+
+userSchema.methods.generateAccessToken = function () {
+  return jsonwebtoken.generateAccessToken({
+    id: this._id.toString(),
+    email: this.email,
+  });
+};
+
+userSchema.methods.generateRefreshToken = function () {
+  return jsonwebtoken.generateRefreshToken({
+    id: this._id.toString(),
+    email: this.email,
+  });
+};
+
+userSchema.methods.generateEmailVerificationToken = function () {
+  return jsonwebtoken.generateEmailToken({
+    id: this._id.toString(),
+    email: this.email,
+  });
 };
 
 // 3. Create a Model.

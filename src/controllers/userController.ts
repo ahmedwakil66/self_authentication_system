@@ -4,6 +4,7 @@ import * as mailService from "@/services/mailService";
 import extractUpdatedDoc from "@/utils/extractUpdatedDoc";
 
 export const getAllUsers = async (req: Request, res: Response) => {
+  // TODO: implement role verification, eg, admin
   try {
     const users = await User.find();
     return res.json(users);
@@ -18,26 +19,32 @@ export const createUser = async (req: Request, res: Response) => {
     // Check if user already exists
     const existingUser = await User.findOne({ email });
     if (existingUser) {
-      return res.status(400).json({ message: "User already exists" });
+      return res.status(409).json({ message: "User already exists" });
     }
     // Save new user
     const user = new User({ name, email, password });
     await user.save();
     // Send verification email
     try {
-      await mailService.sendEmailVerificationMail({
-        id: user._id.toString(),
-        email: user.email,
-      });
+      await mailService.sendEmailVerificationMail(
+        user.generateEmailVerificationToken(),
+        user.email
+      );
     } catch (error) {
       return res.status(201).json({
         message: "Account created. You will need to verify your email address.",
+        user: {
+          id: user._id.toString(),
+        },
       });
     }
     // Send response
     res.status(201).json({
       message:
         "Account created. We have sent a verification link to your email. Please verify your email address as soon as possible. Don't forget to check your spam folder if you don't receive it.",
+      user: {
+        id: user._id.toString(),
+      },
     });
   } catch (error) {
     console.error(error);
@@ -48,12 +55,9 @@ export const createUser = async (req: Request, res: Response) => {
 export const updateUser = async (req: Request, res: Response) => {
   try {
     const userId = req.params.userId;
-    const updatedDoc = extractUpdatedDoc(
-      ["name", "password"],
-      req.body.updatedDoc
-    );
+    const updatedDoc = extractUpdatedDoc(["name", "password"], req.body);
     await User.findOneAndUpdate({ _id: userId }, updatedDoc, { upsert: true });
-    res.json({ updatedDoc, message: "Updated successfully" });
+    res.json({ updated: updatedDoc, message: "Updated successfully" });
   } catch (error) {
     res
       .status(500)
