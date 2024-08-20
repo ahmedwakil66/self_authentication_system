@@ -65,20 +65,3 @@ export const updateUser = async (req: Request, res: Response) => {
   }
 };
 
-// Temporary method: authenticateUser
-export const authenticateUser = async (req: Request, res: Response) => {
-  try {
-    const { email, password } = req.body;
-    const user = await User.findOne({ email: email });
-    if (!user) {
-      return res.status(404).json("Incorrect email or password");
-    }
-    const matched = await user.comparePassword(password);
-    if (!matched) {
-      return res.status(404).json("Incorrect email or password");
-    }
-    res.json("Successfully authenticated");
-  } catch (error) {
-    res.status(500).json({ message: "Server Error" });
-  }
-};

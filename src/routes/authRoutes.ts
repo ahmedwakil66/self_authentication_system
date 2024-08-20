@@ -1,14 +1,16 @@
 import express from "express";
 import {
   login,
+  logout,
   refreshAccessToken,
   verifyUserEmail,
 } from "@/controllers/authController";
 
 const router = express.Router();
 
-router.get("/verify-email", verifyUserEmail);
 router.post("/login", login);
-router.post("/refresh-token", refreshAccessToken);
+router.post("/logout", logout);
+router.post("/refresh", refreshAccessToken);
+router.get("/verify-email", verifyUserEmail);
 
 export default router;

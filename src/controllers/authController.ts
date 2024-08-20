@@ -88,15 +88,24 @@ export const refreshAccessToken = async (req: Request, res: Response) => {
 };
 
 export const logout = async (req: Request, res: Response) => {
-  const { refreshToken } = req.body;
+  const { accessToken, refreshToken } = req.body;
+  if (!accessToken && !refreshToken)
+    return res
+      .status(400)
+      .json({ message: "provide an accessToken or refreshToken" });
 
   try {
-    // Find user and remove the refresh token
-    const user = await User.findOneAndUpdate(
-      { refreshToken },
-      { refreshToken: null }
+    const payload = jwt.verifyToken(
+      accessToken ? accessToken : refreshToken,
+      accessToken ? "access" : "refresh"
     );
-    if (!user) return res.status(400).json({ message: "Invalid request" });
+    if (!payload) return res.status(400).json({ message: "Invalid request" });
+
+    // Find user and remove the refresh token
+    const user = await User.findByIdAndUpdate(payload?.id, {
+      refreshToken: null,
+    });
+    if (!user) return res.status(400).json({ message: "User not recognized" });
 
     // Delete cookie in client
     res.cookie("accessToken", "", {
@@ -105,7 +114,7 @@ export const logout = async (req: Request, res: Response) => {
       httpOnly: true,
     });
 
-    res.json({ success: true, message: "Logged out successfully" });
+    res.json({ message: "Logged out successfully" });
   } catch (error) {
     res.status(500).json({ message: "Server error" });
   }

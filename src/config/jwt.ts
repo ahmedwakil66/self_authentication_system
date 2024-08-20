@@ -1,14 +1,8 @@
 import jwt from "jsonwebtoken";
 
-const accessTokenSecret =
-  process.env.ACCESS_TOKEN_SECRET ||
-  "2c7c540cf8cec4de43c93cf941df630a42b41ecf7f923686159a37549cdba0d8";
-const refreshTokenSecret =
-  process.env.REFRESH_TOKEN_SECRET ||
-  "24fc5e816fe886a7bae6b91e1b634874ce0469fae4b73657e6aad51c6e22c6f1";
-const emailTokenSecret =
-  process.env.EMAIL_TOKEN_SECRET ||
-  "24fc5e816fe886a7bae6b91e1b634874ce0469fae4b73657e6aad51c6e22c6f1";
+const accessTokenSecret = process.env.ACCESS_TOKEN_SECRET;
+const refreshTokenSecret = process.env.REFRESH_TOKEN_SECRET;
+const emailTokenSecret = process.env.EMAIL_TOKEN_SECRET;
 
 type JWTOptions = {
   accessTokenSecret: string;
@@ -99,10 +93,17 @@ class JWT {
   }
 }
 
-const jsonwebtoken = new JWT({
-  accessTokenSecret,
-  refreshTokenSecret,
-  emailTokenSecret,
-});
+let jsonwebtoken: JWT;
+
+try {
+  jsonwebtoken = new JWT({
+    accessTokenSecret: accessTokenSecret as string,
+    refreshTokenSecret: refreshTokenSecret as string,
+    emailTokenSecret: emailTokenSecret as string,
+  });
+} catch (error) {
+  console.log("JWT initialization error: ", (error as NativeError).message);
+  process.exit(1);
+}
 
 export default jsonwebtoken;

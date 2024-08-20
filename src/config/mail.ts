@@ -18,7 +18,10 @@ export const email = new Email({
   message: {
     from: `"WASIVEN" <dev@wasiven.xyz>`,
   },
-  send: false,
+  send:
+    process.env.NODE_ENV === "production" || process.env.NODE_ENV === "prod"
+      ? true
+      : false,
   transport: transporter,
   views: {
     root: path.resolve(__dirname, "..", "templates", "emails"),
