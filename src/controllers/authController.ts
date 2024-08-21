@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
-import jwt from "@/config/jwt";
-import User from "@/models/userModel";
+import jwt from "../config/jwt";
+import User from "../models/userModel";
 
 export const login = async (req: Request, res: Response) => {
   const { email, password } = req.body;

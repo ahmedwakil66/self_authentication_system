@@ -7,7 +7,7 @@ import {
 import {
   authMiddleware,
   ownerAuthMiddleware,
-} from "@/middlewares/authMiddleware";
+} from "../middlewares/authMiddleware";
 
 const router = express.Router();
 

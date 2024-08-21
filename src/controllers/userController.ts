@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
-import User from "@/models/userModel";
-import * as mailService from "@/services/mailService";
-import extractUpdatedDoc from "@/utils/extractUpdatedDoc";
+import User from "../models/userModel";
+import * as mailService from "../services/mailService";
+import extractUpdatedDoc from "../utils/extractUpdatedDoc";
 
 export const getAllUsers = async (req: Request, res: Response) => {
   // TODO: implement role verification, eg, admin

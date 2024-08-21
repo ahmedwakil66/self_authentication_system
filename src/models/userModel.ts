@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 import bcrypt from "bcrypt";
-import jsonwebtoken from "@/config/jwt";
+import jsonwebtoken from "../config/jwt";
 
 // 1. Create an interface representing a document in MongoDB.
 export interface IUser {

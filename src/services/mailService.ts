@@ -1,6 +1,6 @@
 import { SendMailOptions } from "nodemailer";
-import jsonwebtoken, { EncodedPayload } from "@/config/jwt";
-import { email, transporter } from "@/config/mail";
+import jsonwebtoken, { EncodedPayload } from "../config/jwt";
+import { email, transporter } from "../config/mail";
 
 export const sendMail = (mailOptions: SendMailOptions) =>
   transporter.sendMail(mailOptions);
