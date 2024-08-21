@@ -7,7 +7,7 @@
     "start": "node dist/index.js",
     "dev": "ts-node-dev --respawn --transpile-only -r tsconfig-paths/register src/index.ts",
     "build": "tsc",
-    "test": "mocha -r ts-node/register/transpile-only -r tsconfig-paths/register src/tests/**/*.test.ts"
+    "test": "mocha -r dotenv/config -r tsconfig-paths/register -r ts-node/register/transpile-only tests/**/*.test.ts"
   },
   "author": "kwa",
   "license": "MIT",
