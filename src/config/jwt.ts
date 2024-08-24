@@ -1,4 +1,5 @@
 import jwt from "jsonwebtoken";
+import { EncodedPayload, DecodedPayload } from "../@types";
 
 const accessTokenSecret = process.env.ACCESS_TOKEN_SECRET;
 const refreshTokenSecret = process.env.REFRESH_TOKEN_SECRET;
@@ -13,17 +14,17 @@ type JWTOptions = {
   emailTokenExpiresIn?: string | number;
 };
 
-export type EncodedPayload = {
-  id: string;
-  email: string;
-};
+// export type EncodedPayload = {
+//   id: string;
+//   email: string;
+// };
 
-export type DecodedPayload = {
-  id: string;
-  email: string;
-  iat: number;
-  exp: number;
-};
+// export type DecodedPayload = {
+//   id: string;
+//   email: string;
+//   iat: number;
+//   exp: number;
+// };
 
 class JWT {
   #accessTokenSecret: string;

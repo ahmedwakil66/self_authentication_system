@@ -9,6 +9,7 @@ export const getAllUsers = async (req: Request, res: Response) => {
     const users = await User.find();
     return res.json(users);
   } catch (error) {
+    console.log(error);
     res.status(500).json({ message: "Server Error" });
   }
 };
@@ -31,6 +32,7 @@ export const createUser = async (req: Request, res: Response) => {
         user.email
       );
     } catch (error) {
+      console.log(error);
       return res.status(201).json({
         message: "Account created. You will need to verify your email address.",
         user: {
@@ -59,9 +61,9 @@ export const updateUser = async (req: Request, res: Response) => {
     await User.findOneAndUpdate({ _id: userId }, updatedDoc, { upsert: true });
     res.json({ updated: updatedDoc, message: "Updated successfully" });
   } catch (error) {
+    console.log(error);
     res
       .status(500)
       .json({ message: (error as Error).message || "Server Error" });
   }
 };
-
