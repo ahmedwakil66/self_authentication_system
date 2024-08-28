@@ -55,6 +55,7 @@ You may change the code setup/structure if you do not want to use any of the men
 - create user
 - verify email address
 - login
+- update user info
 - refresh access token
 - logout
 
