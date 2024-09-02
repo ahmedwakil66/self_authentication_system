@@ -6,7 +6,7 @@ export const login = async (req: Request, res: Response) => {
   const { email, password } = req.body;
   try {
     // Find user by email
-    const user = await User.findOne({ email: email });
+    const user = await User.findOne({ email: email.toLowerCase() });
     if (!user) {
       return res.status(404).json("Invalid credentials");
     }
@@ -20,7 +20,8 @@ export const login = async (req: Request, res: Response) => {
     // Generate tokens
     const payload = {
       id: user._id.toString(),
-      email,
+      email: user.email,
+      role: user.role,
     };
     const accessToken = user.generateAccessToken();
     const refreshToken = user.generateRefreshToken();
@@ -80,7 +81,12 @@ export const refreshAccessToken = async (req: Request, res: Response) => {
     });
     res.json({
       accessToken: newAccessToken,
-      user: { id: user._id.toString(), email: user.email, name: user.name },
+      user: {
+        id: user._id.toString(),
+        email: user.email,
+        name: user.name,
+        role: user.role,
+      },
     });
   } catch (error) {
     res.status(500).json({ message: "Server error" });

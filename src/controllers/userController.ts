@@ -16,7 +16,8 @@ export const getAllUsers = async (req: Request, res: Response) => {
 
 export const createUser = async (req: Request, res: Response) => {
   try {
-    const { name, email, password } = req.body;
+    const { name, password } = req.body;
+    const email = (req.body.email as string).toLowerCase();
     // Check if user already exists
     const existingUser = await User.findOne({ email });
     if (existingUser) {
@@ -48,9 +49,9 @@ export const createUser = async (req: Request, res: Response) => {
         id: user._id.toString(),
       },
     });
-  } catch (error) {
+  } catch (error: any) {
     console.error(error);
-    res.status(500).json({ message: "Server Error" });
+    res.status(500).json({ message: error.message || "Server Error" });
   }
 };
 

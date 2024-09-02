@@ -2,6 +2,11 @@ import mongoose from "mongoose";
 import bcrypt from "bcrypt";
 import jsonwebtoken from "../config/jwt";
 
+export enum UserRole {
+  User = "user",
+  Admin = "admin",
+}
+
 // 1. Create an interface representing a document in MongoDB.
 export interface IUser {
   name: string;
@@ -9,6 +14,7 @@ export interface IUser {
   password: string;
   refreshToken: string | null;
   isVerified: boolean;
+  role: string[];
 }
 
 interface IUserMethods {
@@ -23,10 +29,30 @@ type UserModel = mongoose.Model<IUser, {}, IUserMethods>;
 // 2. Create a Schema corresponding to the document interface.
 const userSchema = new mongoose.Schema<IUser, UserModel, IUserMethods>({
   name: { type: String, required: true },
-  email: { type: String, required: true, unique: true },
-  password: { type: String, required: true },
+  email: {
+    type: String,
+    unique: true,
+    required: true,
+    validate: {
+      validator: function () {
+        return this.email.toLocaleLowerCase() === this.email;
+      },
+      message: 'Email must be all lowercase'
+    },
+  },
+  password: {
+    type: String,
+    required: true,
+    min: [6, "Passwords should be at least 6 characters"],
+    max: [20, "Password should not exceed 20 characters"],
+  },
   refreshToken: { type: String, default: null },
   isVerified: { type: Boolean, default: false },
+  role: {
+    type: [String],
+    enum: Object.values(UserRole),
+    default: ["user"],
+  },
 });
 
 // 2.1 Hash password before saving
@@ -69,6 +95,7 @@ userSchema.methods.generateAccessToken = function () {
   return jsonwebtoken.generateAccessToken({
     id: this._id.toString(),
     email: this.email,
+    role: this.role,
   });
 };
 
