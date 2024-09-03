@@ -42,9 +42,10 @@ You can only actually use this as a quick start if the followings are correct -
 
 - you plan to use [JWT](https://jwt.io/) authentication with [jsonwebtoken](https://www.npmjs.com/package/jsonwebtoken)
 - you plan to use [MongoDB](https://www.mongodb.com/) with [Mongoose](https://mongoosejs.com/)
-- you will hash user passwords using [bcrypt](https://www.npmjs.com/package/bcrypt)
-- you will use [nodemailer](https://nodemailer.com/) for sending emails
-- you plan to use [typescript](https://www.typescriptlang.org/)
+- you will hash user passwords using [Bcrypt](https://www.npmjs.com/package/bcrypt)
+- you will use [Nodemailer](https://nodemailer.com/) for sending emails
+- you plan to use [Typescript](https://www.typescriptlang.org/)
+- you plan to use [CASL](https://casl.js.org) for access-control
 - you will use [Mocha](https://mochajs.org/) for endpoint testing
 - and the given code structure will do your job
 
@@ -61,4 +62,4 @@ You may change the code setup/structure if you do not want to use any of the men
 
 ### Whats More?
 
-There are some predefined test files to test the endpoints. Feel free to modify them as you may see fit. There is also a sample env file named as `envmap.ini` for your convenience.
+There are some predefined test files to test the endpoints. Feel free to modify them as you may see fit. There is also a sample env file named as `.env.example` for your convenience.
