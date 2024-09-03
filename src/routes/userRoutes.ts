@@ -8,7 +8,6 @@ import {
 import {
   authMiddleware,
   abilityMiddleware,
-  ownerAuthMiddleware,
   authMiddlewareSafe,
 } from "../middlewares";
 

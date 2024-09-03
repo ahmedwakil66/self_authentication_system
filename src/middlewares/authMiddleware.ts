@@ -51,18 +51,3 @@ export const authMiddlewareSafe = (
     next();
   }
 };
-
-export const ownerAuthMiddleware = (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  try {
-    const userId = req.params.userId;
-    if (userId !== req.decoded?.id)
-      return res.status(403).json({ message: "Invalid user" });
-    next();
-  } catch (error) {
-    res.status(500).json({ message: "Server error" });
-  }
-};
