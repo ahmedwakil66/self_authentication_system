@@ -21,6 +21,37 @@ export const authMiddleware = (
   }
 };
 
+export const authMiddlewareSafe = (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const token = req.header("Authorization")?.split(" ")[1];
+
+    if (!token) throw new Error("no token, will use safe mode");
+
+    try {
+      const decoded = jwt.verifyToken(token, "access");
+      if (!decoded) return res.status(403).json({ message: "Invalid token" });
+
+      req.decoded = decoded;
+      next();
+    } catch (error) {
+      res.status(500).json({ message: "Server error" });
+    }
+  } catch (error) {
+    req.decoded = {
+      id: "",
+      email: "",
+      role: [],
+      exp: 0,
+      iat: 0,
+    };
+    next();
+  }
+};
+
 export const ownerAuthMiddleware = (
   req: Request,
   res: Response,

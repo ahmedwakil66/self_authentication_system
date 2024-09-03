@@ -1,13 +1,56 @@
 import { Request, Response } from "express";
+import { permittedFieldsOf } from "@casl/ability/extra";
+import pick from "lodash/pick";
 import User from "../models/userModel";
 import * as mailService from "../services/mailService";
-import extractUpdatedDoc from "../utils/extractUpdatedDoc";
+
+const User_Fields = [
+  "name",
+  "email",
+  "password",
+  "accessToken",
+  "refreshToken",
+  "isVerified",
+  "role",
+];
 
 export const getAllUsers = async (req: Request, res: Response) => {
-  // TODO: implement role verification, eg, admin
+  // Any logged in user can see all user data
+  // TODO: implement 'read: list' validation
   try {
-    const users = await User.find();
+    const ability = req.ability;
+    const fields = permittedFieldsOf(ability, "read", User, {
+      fieldsFrom: (rule) => rule.fields || User_Fields,
+    });
+
+    const users = await User.find(
+      {},
+      fields.reduce((acc: Record<string, number>, cur) => {
+        acc[cur] = 1;
+        return acc;
+      }, {})
+    );
+
     return res.json(users);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: "Server Error" });
+  }
+};
+
+export const getSingleUser = async (req: Request, res: Response) => {
+  try {
+    const userId = req.params.userId;
+    const ability = req.ability;
+
+    const user = await User.findById(userId);
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    const fields = permittedFieldsOf(ability, "read", user, {
+      fieldsFrom: (rule) => rule.fields || User_Fields,
+    });
+
+    return res.json(pick(user, fields));
   } catch (error) {
     console.log(error);
     res.status(500).json({ message: "Server Error" });
@@ -58,8 +101,25 @@ export const createUser = async (req: Request, res: Response) => {
 export const updateUser = async (req: Request, res: Response) => {
   try {
     const userId = req.params.userId;
-    const updatedDoc = extractUpdatedDoc(["name", "password"], req.body);
-    await User.findOneAndUpdate({ _id: userId }, updatedDoc, { upsert: true });
+
+    const userToUpdate = await User.findById(userId);
+    if (!userToUpdate)
+      return res.status(404).json({ message: "User not found" });
+
+    if (!req.ability.can("manage", userToUpdate)) {
+      return res.status(403).json({
+        message: "You don't have sufficient permission for this action",
+      });
+    }
+
+    const fields = permittedFieldsOf(req.ability, "manage", userToUpdate, {
+      fieldsFrom: (rule) => rule.fields || User_Fields,
+    });
+    // Caution: role field will be replaced all together (if present)
+    // OptionalTodo: insert or remove single role value
+    const updatedDoc = pick(req.body, fields);
+    await userToUpdate.updateOne(updatedDoc);
+
     res.json({ updated: updatedDoc, message: "Updated successfully" });
   } catch (error) {
     console.log(error);

@@ -1,4 +1,5 @@
 import { DecodedPayload } from "./jwt";
+import { MongoAbility } from '@casl/ability';
 // import { Request } from "express";
 
 // declare module "express-serve-static-core" {
@@ -10,7 +11,8 @@ import { DecodedPayload } from "./jwt";
 declare global {
   namespace Express {
     interface Request {
-      decoded?: DecodedPayload
+      decoded?: DecodedPayload;
+      ability: MongoAbility;
     }
   }
 }
