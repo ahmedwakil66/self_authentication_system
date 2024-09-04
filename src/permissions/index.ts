@@ -2,24 +2,25 @@ import { DecodedPayload } from "../@types";
 import User, { UserRole } from "../models/userModel";
 import { AbilityBuilder, createMongoAbility } from "@casl/ability";
 
-// export type Action = "create" | "read" | "update" | "delete" | "manage";
-// export type Subject = typeof User;
-// export type AppAbility = Ability<[Action, Subject]>;
-
 export default function defineAbilityFor(me: DecodedPayload | undefined) {
-  const { can, build } = new AbilityBuilder(createMongoAbility);
+  const { can, cannot, build } = new AbilityBuilder(createMongoAbility);
 
+  // anyone can see id,name for any user but cannot list
   can("read", User, ["_id", "name"]);
+  cannot("readList", User).because("Ops! Mango public cannot list users");
 
-  if (!me) return build();
+  if (me) {
+    // Logged-in users can view (id,name,role) of all users
+    can(["read", "readList"], User, ["_id", "name", "role"]);
 
-  if (me.role?.length) {
-    can("read", User, ["_id", "name", "role"]);
-    can("read", User, { _id: me.id, email: me.email });
-    can("manage", User, ["name", "email", "password"], { _id: me.id });
+    // Logged-in users can read their own full fields
+    can("read", User, { _id: me.id });
 
-    if (me.role.includes(UserRole.Admin)) {
-      can("read", User);
+    // Logged-in users can update their own name, email, and password
+    can(["update"], User, ["name", "email", "password"], { _id: me.id });
+
+    if (me.role?.includes(UserRole.Admin)) {
+      // Admin user can do anything
       can("manage", User);
     }
   }

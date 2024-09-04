@@ -41,13 +41,7 @@ export const authMiddlewareSafe = (
       res.status(500).json({ message: "Server error" });
     }
   } catch (error) {
-    req.decoded = {
-      id: "",
-      email: "",
-      role: [],
-      exp: 0,
-      iat: 0,
-    };
+    req.decoded = undefined;
     next();
   }
 };

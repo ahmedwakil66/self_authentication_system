@@ -3,6 +3,7 @@ import { permittedFieldsOf } from "@casl/ability/extra";
 import pick from "lodash/pick";
 import User from "../models/userModel";
 import * as mailService from "../services/mailService";
+import { ForbiddenError } from "@casl/ability";
 
 const User_Fields = [
   "name",
@@ -15,11 +16,11 @@ const User_Fields = [
 ];
 
 export const getAllUsers = async (req: Request, res: Response) => {
-  // Any logged in user can see all user data
-  // TODO: implement 'read: list' validation
   try {
     const ability = req.ability;
-    const fields = permittedFieldsOf(ability, "read", User, {
+
+    ForbiddenError.from(ability).throwUnlessCan("readList", User);
+    const fields = permittedFieldsOf(ability, "readList", User, {
       fieldsFrom: (rule) => rule.fields || User_Fields,
     });
 
@@ -32,9 +33,9 @@ export const getAllUsers = async (req: Request, res: Response) => {
     );
 
     return res.json(users);
-  } catch (error) {
+  } catch (error: any) {
     console.log(error);
-    res.status(500).json({ message: "Server Error" });
+    res.status(500).json({ message: error.message || "Server Error" });
   }
 };
 
@@ -51,9 +52,9 @@ export const getSingleUser = async (req: Request, res: Response) => {
     });
 
     return res.json(pick(user, fields));
-  } catch (error) {
+  } catch (error: any) {
     console.log(error);
-    res.status(500).json({ message: "Server Error" });
+    res.status(500).json({ message: error.message || "Server Error" });
   }
 };
 
@@ -101,30 +102,31 @@ export const createUser = async (req: Request, res: Response) => {
 export const updateUser = async (req: Request, res: Response) => {
   try {
     const userId = req.params.userId;
+    const ability = req.ability;
 
     const userToUpdate = await User.findById(userId);
     if (!userToUpdate)
       return res.status(404).json({ message: "User not found" });
 
-    if (!req.ability.can("manage", userToUpdate)) {
+    if (!ability.can("update", userToUpdate)) {
       return res.status(403).json({
         message: "You don't have sufficient permission for this action",
       });
     }
 
-    const fields = permittedFieldsOf(req.ability, "manage", userToUpdate, {
+    const fields = permittedFieldsOf(ability, "update", userToUpdate, {
       fieldsFrom: (rule) => rule.fields || User_Fields,
     });
     // Caution: role field will be replaced all together (if present)
     // OptionalTodo: insert or remove single role value
     const updatedDoc = pick(req.body, fields);
-    await userToUpdate.updateOne(updatedDoc);
+    // password hash won't invoke for doc level
+    // await userToUpdate.updateOne(updatedDoc);
+    await User.findByIdAndUpdate(userToUpdate._id, updatedDoc);
 
     res.json({ updated: updatedDoc, message: "Updated successfully" });
-  } catch (error) {
+  } catch (error: any) {
     console.log(error);
-    res
-      .status(500)
-      .json({ message: (error as Error).message || "Server Error" });
+    res.status(500).json({ message: error.message || "Server Error" });
   }
 };

@@ -27,33 +27,32 @@ interface IUserMethods {
 type UserModel = mongoose.Model<IUser, {}, IUserMethods>;
 
 // 2. Create a Schema corresponding to the document interface.
-const userSchema = new mongoose.Schema<IUser, UserModel, IUserMethods>({
-  name: { type: String, required: true },
-  email: {
-    type: String,
-    unique: true,
-    required: true,
-    validate: {
-      validator: function () {
-        return this.email.toLocaleLowerCase() === this.email;
-      },
-      message: 'Email must be all lowercase'
+const userSchema = new mongoose.Schema<IUser, UserModel, IUserMethods>(
+  {
+    name: { type: String, required: true, trim: true },
+    email: {
+      type: String,
+      unique: true,
+      required: true,
+      lowercase: true,
+      trim: true,
+    },
+    password: {
+      type: String,
+      required: true,
+      min: [6, "Passwords should be at least 6 characters"],
+      max: [20, "Password should not exceed 20 characters"],
+    },
+    refreshToken: { type: String, default: null },
+    isVerified: { type: Boolean, default: false },
+    role: {
+      type: [String],
+      enum: Object.values(UserRole),
+      default: ["user"],
     },
   },
-  password: {
-    type: String,
-    required: true,
-    min: [6, "Passwords should be at least 6 characters"],
-    max: [20, "Password should not exceed 20 characters"],
-  },
-  refreshToken: { type: String, default: null },
-  isVerified: { type: Boolean, default: false },
-  role: {
-    type: [String],
-    enum: Object.values(UserRole),
-    default: ["user"],
-  },
-});
+  { timestamps: true }
+);
 
 // 2.1 Hash password before saving
 userSchema.pre("save", async function (next) {
