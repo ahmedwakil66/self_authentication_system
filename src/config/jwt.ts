@@ -101,6 +101,9 @@ try {
     accessTokenSecret: accessTokenSecret as string,
     refreshTokenSecret: refreshTokenSecret as string,
     emailTokenSecret: emailTokenSecret as string,
+    accessTokenExpiresIn: process.env.ACCESS_TOKEN_EXPIRES_IN,
+    refreshTokenExpiresIn: process.env.REFRESH_TOKEN_EXPIRES_IN,
+    emailTokenExpiresIn: process.env.EMAIL_TOKEN_EXPIRES_IN,
   });
 } catch (error) {
   console.log("JWT initialization error: ", (error as NativeError).message);
