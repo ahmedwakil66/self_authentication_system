@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 import bcrypt from "bcrypt";
 import jsonwebtoken from "../config/jwt";
+import * as mailService from "../services/mailService";
 
 export enum UserRole {
   User = "user",
@@ -15,6 +16,8 @@ export interface IUser {
   refreshToken: string | null;
   isVerified: boolean;
   role: string[];
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 interface IUserMethods {
@@ -50,6 +53,8 @@ const userSchema = new mongoose.Schema<IUser, UserModel, IUserMethods>(
       enum: Object.values(UserRole),
       default: ["user"],
     },
+    createdAt: Date,
+    updatedAt: Date,
   },
   { timestamps: true }
 );
@@ -82,8 +87,40 @@ userSchema.pre("findOneAndUpdate", async function (next) {
   }
   next();
 });
+userSchema.pre("updateOne", async function (next) {
+  const update = this.getUpdate() as { password?: string };
+  if (update.password) {
+    try {
+      const salt = await bcrypt.genSalt(10);
+      update.password = await bcrypt.hash(update.password, salt);
+      this.setUpdate(update);
+    } catch (error: any) {
+      return next(error);
+    }
+  }
+  next();
+});
 
-// 2.3 Add methods
+// 2.3 Send email on account creation
+userSchema.post("save", async function (user) {
+  // user.isNew is always returning false
+  if (!user.isVerified && user.createdAt === user.updatedAt) {
+    try {
+      await mailService.sendEmailVerificationMail(
+        user.generateEmailVerificationToken(),
+        user.email
+      );
+      console.log('mail should be sent');
+    } catch (error) {
+      console.log(
+        `Automatic email sending failed on account creation for userId: ${user._id}`,
+        error
+      );
+    }
+  }
+});
+
+// 2.4 Add methods
 userSchema.methods.comparePassword = async function (
   candidatePassword: string
 ): Promise<boolean> {
