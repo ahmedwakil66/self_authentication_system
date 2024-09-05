@@ -1,5 +1,5 @@
 This is an [ExpressJS](https://expressjs.com/) project.<br>
-You will need [`NodeJS`](https://nodejs.org/) installed in your local machine.
+You will need [`NodeJS`](https://nodejs.org/) installed on your local machine.
 
 ### First Thing First
 
