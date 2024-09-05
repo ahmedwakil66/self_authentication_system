@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { permittedFieldsOf } from "@casl/ability/extra";
 import pick from "lodash/pick";
-import User from "../models/userModel";
+import User, { IUser } from "../models/userModel";
 import * as mailService from "../services/mailService";
 import { ForbiddenError } from "@casl/ability";
 import handleControllerErrors from "../utils/handleControllerErrors";
@@ -70,20 +70,20 @@ export const createUser = async (req: Request, res: Response) => {
     const user = new User({ name, email, password });
     await user.save();
     // Send verification email
-    try {
-      await mailService.sendEmailVerificationMail(
-        user.generateEmailVerificationToken(),
-        user.email
-      );
-    } catch (error) {
-      console.log(error);
-      return res.status(201).json({
-        message: "Account created. You will need to verify your email address.",
-        user: {
-          id: user._id.toString(),
-        },
-      });
-    }
+    // try {
+    //   await mailService.sendEmailVerificationMail(
+    //     user.generateEmailVerificationToken(),
+    //     user.email
+    //   );
+    // } catch (error) {
+    //   console.log(error);
+    //   return res.status(201).json({
+    //     message: "Account created. You will need to verify your email address.",
+    //     user: {
+    //       id: user._id.toString(),
+    //     },
+    //   });
+    // }
     // Send response
     res.status(201).json({
       message:
@@ -115,12 +115,13 @@ export const updateUser = async (req: Request, res: Response) => {
     const fields = permittedFieldsOf(ability, "update", userToUpdate, {
       fieldsFrom: (rule) => rule.fields || User_Fields,
     });
-    // Caution: role field will be replaced all together (if present)
+    // Caution: role field will be replaced all together (if permitted & present)
     // OptionalTodo: insert or remove single role value
-    const updatedDoc = pick(req.body, fields);
-    // password hash won't invoke for doc level
-    // await userToUpdate.updateOne(updatedDoc);
-    await User.findByIdAndUpdate(userToUpdate._id, updatedDoc);
+    const updatedDoc: Partial<IUser> = pick(req.body, fields);
+    for (const [key, value] of Object.entries(updatedDoc)) {
+      (userToUpdate[key as keyof IUser] as typeof value) = value;
+    }
+    await userToUpdate.save();
 
     res.json({ updated: updatedDoc, message: "Updated successfully" });
   } catch (error: any) {

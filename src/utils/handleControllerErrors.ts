@@ -16,11 +16,11 @@ const handleMongooseError = (error: mongoose.Error, res: Response) => {
     errors;
 
   console.log("error instance name: ", error.constructor.name);
-//   console.log("error: ", error);
+  //   console.log("error: ", error);
 
   if (error instanceof mongoose.Error.ValidationError) {
     status = 400;
-    message = error._message || error.message;
+    message = "Validation failed";
     errors = error.errors;
   }
 
