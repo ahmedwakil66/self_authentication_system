@@ -4,6 +4,7 @@ import pick from "lodash/pick";
 import User from "../models/userModel";
 import * as mailService from "../services/mailService";
 import { ForbiddenError } from "@casl/ability";
+import handleControllerErrors from "../utils/handleControllerErrors";
 
 const User_Fields = [
   "name",
@@ -34,8 +35,7 @@ export const getAllUsers = async (req: Request, res: Response) => {
 
     return res.json(users);
   } catch (error: any) {
-    console.log(error);
-    res.status(500).json({ message: error.message || "Server Error" });
+    return handleControllerErrors(error, req, res);
   }
 };
 
@@ -53,8 +53,7 @@ export const getSingleUser = async (req: Request, res: Response) => {
 
     return res.json(pick(user, fields));
   } catch (error: any) {
-    console.log(error);
-    res.status(500).json({ message: error.message || "Server Error" });
+    return handleControllerErrors(error, req, res);
   }
 };
 
@@ -94,8 +93,7 @@ export const createUser = async (req: Request, res: Response) => {
       },
     });
   } catch (error: any) {
-    console.error(error);
-    res.status(500).json({ message: error.message || "Server Error" });
+    return handleControllerErrors(error, req, res);
   }
 };
 
@@ -126,7 +124,6 @@ export const updateUser = async (req: Request, res: Response) => {
 
     res.json({ updated: updatedDoc, message: "Updated successfully" });
   } catch (error: any) {
-    console.log(error);
-    res.status(500).json({ message: error.message || "Server Error" });
+    return handleControllerErrors(error, req, res);
   }
 };

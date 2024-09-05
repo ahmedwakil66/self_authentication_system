@@ -1,4 +1,4 @@
-import mongoose, { ErrorHandlingMiddlewareFunction } from "mongoose";
+import mongoose from "mongoose";
 import bcrypt from "bcrypt";
 import jsonwebtoken from "../config/jwt";
 
