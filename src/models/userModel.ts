@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import mongoose, { ErrorHandlingMiddlewareFunction } from "mongoose";
 import bcrypt from "bcrypt";
 import jsonwebtoken from "../config/jwt";
 
@@ -63,8 +63,8 @@ userSchema.pre("save", async function (next) {
     const salt = await bcrypt.genSalt(10);
     this.password = await bcrypt.hash(this.password, salt);
     next();
-  } catch (error) {
-    next(error as NativeError);
+  } catch (error: any) {
+    next(error);
   }
 });
 
@@ -76,8 +76,8 @@ userSchema.pre("findOneAndUpdate", async function (next) {
       const salt = await bcrypt.genSalt(10);
       update.password = await bcrypt.hash(update.password, salt);
       this.setUpdate(update);
-    } catch (error) {
-      return next(error as NativeError);
+    } catch (error: any) {
+      return next(error);
     }
   }
   next();

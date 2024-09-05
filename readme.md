@@ -11,7 +11,7 @@ npm install
 
 ### Prerequisite
 
-Use sample `envmap.ini` and Define your version of .env <br>
+Use sample `.env.example` and Define your version of .env <br>
 
 The app won't start if it -
 
