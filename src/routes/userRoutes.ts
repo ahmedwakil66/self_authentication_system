@@ -1,10 +1,10 @@
 import express from "express";
 import {
   createUser,
-  getAllUsers,
-  getSingleUser,
+  readAllUsers,
+  readSingleUser,
   updateUser,
-} from "../controllers/userController";
+} from "../controllers";
 import {
   authMiddleware,
   abilityMiddleware,
@@ -13,8 +13,8 @@ import {
 
 const router = express.Router();
 
-router.get("/", authMiddlewareSafe, abilityMiddleware, getAllUsers);
-router.get("/:userId", authMiddlewareSafe, abilityMiddleware, getSingleUser);
+router.get("/", authMiddlewareSafe, abilityMiddleware, readAllUsers);
+router.get("/:userId", authMiddlewareSafe, abilityMiddleware, readSingleUser);
 
 router.post("/", createUser);
 router.put("/:userId", authMiddleware, abilityMiddleware, updateUser);
