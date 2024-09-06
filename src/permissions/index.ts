@@ -13,8 +13,8 @@ export default function defineAbilityFor(me: DecodedPayload | undefined) {
     // Logged-in users can view (id,name,role) of all users
     can(["read", "readList"], User, ["_id", "name", "role"]);
 
-    // Logged-in users can read their own full fields
-    can("read", User, { _id: me.id });
+    // Logged-in users can read and delete their own profile
+    can(["read", "delete"], User, { _id: me.id });
 
     // Logged-in users can update their own name, email, and password
     can(["update"], User, ["name", "email", "password"], { _id: me.id });
