@@ -103,7 +103,7 @@ userSchema.pre("updateOne", async function (next) {
 
 // 2.3 Send email on account creation
 userSchema.post("save", async function (user) {
-  // user.isNew is always returning false
+  // only for first time
   if (!user.isVerified && user.createdAt === user.updatedAt) {
     try {
       await mailService.sendEmailVerificationMail(

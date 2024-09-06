@@ -14,6 +14,8 @@ const User_Fields = [
   "refreshToken",
   "isVerified",
   "role",
+  "createdAt",
+  "updatedAt"
 ];
 
 export const getAllUsers = async (req: Request, res: Response) => {

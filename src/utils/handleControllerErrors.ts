@@ -1,9 +1,13 @@
+import { ForbiddenError } from "@casl/ability";
 import { Request, Response } from "express";
 import mongoose from "mongoose";
 
 const handleControllerErrors = (error: any, req: Request, res: Response) => {
   if (error instanceof mongoose.Error) {
     return handleMongooseError(error, res);
+  } else if (error instanceof ForbiddenError) {
+    // tried to do an action that were not permitted
+    return res.status(403).json({ message: error.message });
   }
   console.error(error);
   return res.status(500).json({ message: error.message || "Server Error" });
