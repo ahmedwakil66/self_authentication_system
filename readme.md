@@ -1,44 +1,10 @@
-This is an [ExpressJS](https://expressjs.com/) project.<br>
-You will need [`NodeJS`](https://nodejs.org/) installed on your local machine.
-
-### First Thing First
-
-Install necessary dependencies, run:
-
-```bash
-npm install
-```
-
-### Prerequisite
-
-Use sample `.env.example` and Define your version of .env <br>
-
-The app won't start if it -
-
-- fails to connect to the database
-- fails to initiate jsonwebtoken instance
-
-### Available Commands
-
-These are the commands that are already defined in your package json file:
-
-```bash
-npm run dev
-npm run build
-npm run start
-npm run test
-```
-
-Now run `npm run dev` to start the dev server. <br>
-Then open [http://localhost:3000](http://localhost:3000) with a REST client to see the result. If you have [postman](https://www.postman.com/), use it. Or you can use [thunder client](https://www.thunderclient.com/) directly in your IDE (VS Code).
-
 ### What Is This Branch?
 
 This branch is an extension of master branch where I tried to build a basic blogging website backend. For mostly I was experimenting `CASL`'s access control and `mongoose`'s cross document linking.
 
-### So, whats to expect for the blogs route?
+### So, what are to expect for the blog routes?
 
-You can only actually use this as a quick start if the followings are correct -
+The followings -
 
 - any visitor can view all published blogs
 - only a logged in user can create a new blog
