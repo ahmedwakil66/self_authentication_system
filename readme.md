@@ -32,22 +32,19 @@ npm run test
 Now run `npm run dev` to start the dev server. <br>
 Then open [http://localhost:3000](http://localhost:3000) with a REST client to see the result. If you have [postman](https://www.postman.com/), use it. Or you can use [thunder client](https://www.thunderclient.com/) directly in your IDE (VS Code).
 
-### What Is This Project?
+### What Is This Branch?
 
-Often you might need to create an [Express](https://expressjs.com/) backend for REST API that has one thing in common - Basic email password authentication. Setting up this common task each time is a hassle and a waste of time. So, this project can give you a quick start on that scenario.
+This branch is an extension of master branch where I tried to build a basic blogging website backend. For mostly I was experimenting `CASL`'s access control and `mongoose`'s cross document linking.
 
-### But...
+### So, whats to expect for the blogs route?
 
 You can only actually use this as a quick start if the followings are correct -
 
-- you plan to use [JWT](https://jwt.io/) authentication with [jsonwebtoken](https://www.npmjs.com/package/jsonwebtoken)
-- you plan to use [MongoDB](https://www.mongodb.com/) with [Mongoose](https://mongoosejs.com/)
-- you will hash user passwords using [Bcrypt](https://www.npmjs.com/package/bcrypt)
-- you will use [Nodemailer](https://nodemailer.com/) for sending emails
-- you plan to use [Typescript](https://www.typescriptlang.org/)
-- you plan to use [CASL](https://casl.js.org) for access-control
-- you will use [Mocha](https://mochajs.org/) for endpoint testing
-- and the given code structure will do your job
+- any visitor can view all published blogs
+- only a logged in user can create a new blog
+- only owner can view its own draft or private blogs
+- `upcoming` owner can only update permitted fields of its own blogs
+- `upcoming` owner can delete its own blogs
 
 You may change the code setup/structure if you do not want to use any of the mentioned libraries, but again, that won't be a quick-start.
 
@@ -62,4 +59,8 @@ You may change the code setup/structure if you do not want to use any of the men
 
 ### Whats More?
 
-There are some predefined test files to test the endpoints. Feel free to modify them as you may see fit. There is also a sample env file named as `.env.example` for your convenience.
+Currently, admin user has full access over everything & that is not practical in real case scenario. But for now, I will keep things this way for convenience.
+
+#
+
+##### If you are reading this far please have me in your connection in [linkedIn](https://www.linkedin.com/in/wakil-ahmed-a62a47248/). <br> I would love to hear your suggestions. Thank You!
