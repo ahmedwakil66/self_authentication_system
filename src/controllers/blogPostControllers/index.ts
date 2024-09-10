@@ -12,3 +12,5 @@ export const BlogPost_Fields = [
 
 export * from "./blogPost.create";
 export * from "./blogPost.read";
+export * from "./blogPost.update";
+export * from "./blogPost.delete";
