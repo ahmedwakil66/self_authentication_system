@@ -2,7 +2,7 @@ import { DecodedPayload } from "../@types";
 import User, { UserRole } from "../models/userModel";
 import BlogPost, { BlogPostStatus } from "../models/blogModel";
 import { AbilityBuilder, createMongoAbility } from "@casl/ability";
-import mongoose from 'mongoose';
+import mongoose from "mongoose";
 
 export default function defineAbilityFor(me: DecodedPayload | undefined) {
   const { can, cannot, build } = new AbilityBuilder(createMongoAbility);
@@ -25,15 +25,16 @@ export default function defineAbilityFor(me: DecodedPayload | undefined) {
     can(["update"], User, ["name", "email", "password"], { _id: me.id });
 
     // Logged-in user can get its own blog post
-    can(["read"], BlogPost, { "author.id": me.id });
+    // @ts-ignore
+    can("read", BlogPost, { "author.id": me.id });
     // Logged-in user can list all of its own blog posts
     can("readList", BlogPost, { author: new mongoose.Types.ObjectId(me.id) });
     // Logged-in user can update permitted fields of its own blog posts
-    can(["update"], BlogPost, ["title", "body", "tags", "status"], {
+    can("update", BlogPost, ["title", "body", "tags", "status"], {
       author: me.id,
     });
     // Logged-in user can delete its own blog post
-    can(["delete"], BlogPost, { author: me.id });
+    can("delete", BlogPost, { author: me.id });
 
     if (me.role?.includes(UserRole.Admin)) {
       // Admin user can do anything
