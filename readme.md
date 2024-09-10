@@ -1,6 +1,6 @@
 ### What Is This Branch?
 
-This branch is an extension of master branch where I tried to build a basic blogging website backend. For mostly I was experimenting `CASL`'s access control and `mongoose`'s cross document linking.
+This branch is an extension of master branch. Here I tried to build a basic blogging website backend. For mostly I was experimenting `CASL`'s access control and `mongoose`'s cross document linking.
 
 ### So, what are to expect for the blog routes?
 
@@ -12,7 +12,6 @@ The followings -
 - `upcoming` owner can only update permitted fields of its own blogs
 - `upcoming` owner can delete its own blogs
 
-You may change the code setup/structure if you do not want to use any of the mentioned libraries, but again, that won't be a quick-start.
 
 ### Ready To Use API Endpoints
 
